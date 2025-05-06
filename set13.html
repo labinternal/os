@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>OS Set 13: SSTF Disk Scheduling</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        h2 {
+            color: #3498db;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        .output {
+            background: #e8f4f8;
+            padding: 10px;
+            border-left: 3px solid #3498db;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .visualization {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>OS Set 13: SSTF (Shortest Seek Time First) Disk Scheduling</h1>
+
+    <h2>Concept</h2>
+    <p>SSTF is a disk scheduling algorithm that selects the request with the minimum seek time from the current head
+        position.</p>
+    <p><strong>Key Characteristics:</strong></p>
+    <ul>
+        <li>Selects the I/O request that requires the least movement from current head position</li>
+        <li>Better performance than FCFS but can cause starvation</li>
+        <li>Reduces average seek time compared to FCFS</li>
+    </ul>
+
+    <h2>Program Implementation</h2>
+    <pre>#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+
+int absolute(int a, int b) {
+    int c = a - b;
+    return (c < 0) ? -c : c;
+}
+
+int main() {
+    int choice, m, n, x, start, i, j, pos, min, a[15], count;
+    count = 0;
+    
+    printf("\nEnter the number of cylinders: ");
+    scanf("%d", &m);
+    
+    printf("\nEnter the number of requests: ");
+    scanf("%d", &n);
+    
+    printf("\nEnter current position: ");
+    scanf("%d", &start);
+    
+    printf("\nEnter the request queue: ");
+    for(i = 0; i < n; i++) {
+        scanf("%d", &a[i]);
+        if(a[i] >= m) {
+            printf("\nInvalid input");
+            scanf("%d", &a[i]);
+        }
+    }
+    
+    printf("\nSSTF:\n");
+    printf("Scheduling services the request in the order that follows:\n%d\n", start);
+    
+    x = start;
+    for(i = 0; i < n; i++) {
+        min = absolute(a[i], x);
+        pos = i;
+        
+        // Find request with minimum seek time
+        for(j = i; j < n; j++) {
+            if(min > absolute(x, a[j])) {
+                pos = j;
+                min = absolute(x, a[j]);
+            }
+        }
+        
+        count += absolute(x, a[pos]);
+        x = a[pos];
+        
+        // Swap positions to mark as served
+        a[pos] = a[i];
+        a[i] = x;
+        
+        printf("%d\n", x);
+    }
+    
+    printf("\nTotal Head Movement: %d Cylinders", count);
+    return 0;
+}</pre>
+
+    <div class="output">
+        <h3>Output Example:</h3>
+        <pre>Enter the number of cylinders: 200
+Enter the number of requests: 8
+Enter current position: 53
+Enter the request queue: 98 183 37 122 14 124 65 67
+
+SSTF:
+Scheduling services the request in the order that follows:
+53
+65
+67
+37
+14
+98
+122
+124
+183
+
+Total Head Movement: 236 Cylinders</pre>
+    </div>
+
+    <div class="visualization">
+        <h3>Seek Pattern Visualization</h3>
+        <p>Starting at 53, the head moves to:</p>
+        <p>53 → 65 (12) → 67 (2) → 37 (30) → 14 (23) → 98 (84) → 122 (24) → 124 (2) → 183 (59)</p>
+        <p>Total head movement = 12 + 2 + 30 + 23 + 84 + 24 + 2 + 59 = 236 cylinders</p>
+    </div>
+
+    <h2>Algorithm Steps</h2>
+    <table>
+        <tr>
+            <th>Step</th>
+            <th>Action</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>Initialize current head position and request queue</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Find the request with minimum seek time from current position</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>Move head to that position and service the request</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>Remove the serviced request from the queue</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>Repeat steps 2-4 until all requests are serviced</td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td>Calculate total head movement</td>
+        </tr>
+    </table>
+
+    <h2>Advantages</h2>
+    <ul>
+        <li>Reduces average response time compared to FCFS</li>
+        <li>Better throughput than FCFS scheduling</li>
+        <li>More efficient head movement</li>
+    </ul>
+
+    <h2>Disadvantages</h2>
+    <ul>
+        <li>Can cause starvation for requests far from head position</li>
+        <li>Requires dynamic calculation of seek time for each request</li>
+        <li>Not guaranteed to be optimal</li>
+    </ul>
+
+    <h2>Comparison with Other Algorithms</h2>
+    <table>
+        <tr>
+            <th>Algorithm</th>
+            <th>Average Seek Time</th>
+            <th>Starvation</th>
+        </tr>
+        <tr>
+            <td>FCFS</td>
+            <td>Highest</td>
+            <td>No</td>
+        </tr>
+        <tr>
+            <td>SSTF</td>
+            <td>Lower than FCFS</td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>SCAN</td>
+            <td>Lower than SSTF</td>
+            <td>No</td>
+        </tr>
+        <tr>
+            <td>C-SCAN</td>
+            <td>Lowest</td>
+            <td>No</td>
+        </tr>
+    </table>
+</body>
+
+</html>

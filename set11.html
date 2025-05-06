@@ -1,0 +1,144 @@
+<!-- Set 11: LRU Page Replacement -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>OS Set 11: LRU Page Replacement</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        h2 {
+            color: #3498db;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        .output {
+            background: #e8f4f8;
+            padding: 10px;
+            border-left: 3px solid #3498db;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>OS Set 11: LRU Page Replacement</h1>
+
+    <pre>#include&lt;stdio.h&gt;
+int main() {
+    int frames[10], temp[10], pages[50];
+    int total_pages, m, n, position = 0, k, l, total_frames;
+    int page_fault = 0, found, oldest;
+    
+    printf("\nEnter Total Number of Frames:\t");
+    scanf("%d", &total_frames);
+    for(m = 0; m &lt; total_frames; m++) {
+        frames[m] = -1;
+    }
+
+    printf("Enter Total Number of Pages:\t");
+    scanf("%d", &total_pages);
+    printf("Enter Values for Reference String:\n");
+    for(m = 0; m &lt; total_pages; m++) {
+        printf("Value No.[%d]:\t", m + 1);
+        scanf("%d", &pages[m]);
+    }
+    
+    for(n = 0; n &lt; total_pages; n++) {
+        found = 0;
+        for(m = 0; m &lt; total_frames; m++) {
+            if(frames[m] == pages[n]) {
+                found = 1;
+                break;
+            }
+        }
+
+        if(found == 0) {
+            for(m = 0; m &lt; total_frames; m++) {
+                if(frames[m] == -1) {
+                    frames[m] = pages[n];
+                    page_fault++;
+                    found = 1;
+                    break;
+                }
+            }
+            
+            if(found == 0) {
+                for(m = 0; m &lt; total_frames; m++) {
+                    temp[m] = -1;
+                }
+
+                for(k = n - 1, l = 1; l &lt;= total_frames - 1; l++, k--) {
+                    for(m = 0; m &lt; total_frames; m++) {
+                        if(pages[k] == frames[m] && temp[m] == -1) {
+                            temp[m] = 1;
+                            break;
+                        }
+                    }
+                }
+
+                int max = -1;
+                for(m = 0; m &lt; total_frames; m++) {
+                    if(temp[m] == -1) {
+                        position = m;
+                        break;
+                    }
+                    if(temp[m] &gt; max) {
+                        max = temp[m];
+                        position = m;
+                    }
+                }
+
+                frames[position] = pages[n];
+                page_fault++;
+            }
+        }
+
+        printf("\n");
+        for(m = 0; m &lt; total_frames; m++) {
+            if(frames[m] != -1)
+                printf("%d\t", frames[m]);
+            else
+                printf("\t");
+        }
+    }
+
+    printf("\n\nTotal Number of Page Faults:\t%d\n", page_fault);
+    return 0;
+}</pre>
+
+    <div class="output">
+        <h3>Output:</h3>
+        <pre>Enter Total Number of Frames: 3
+Enter Total Number of Pages: 5
+Enter Values for Reference String:
+Value No.[1]: 8
+Value No.[2]: 75
+Value No.[3]: 2
+Value No.[4]: 36
+Value No.[5]: 4
+
+8    -1    -1
+8    75    -1
+8    75    2
+36    75    2
+36    4    2
+
+Total Number of Page Faults: 2</pre>
+    </div>
+</body>
+
+</html>

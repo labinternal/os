@@ -1,0 +1,144 @@
+<!-- Set 12: SCAN Disk Scheduling -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>OS Set 12: SCAN Scheduling</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        h2 {
+            color: #3498db;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        .output {
+            background: #e8f4f8;
+            padding: 10px;
+            border-left: 3px solid #3498db;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>OS Set 12: SCAN Disk Scheduling</h1>
+
+    <pre>#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+
+int absolute(int a,int b) {
+    int c = a-b;
+    if(c&lt;0) return -c;
+    else return c;
+}
+
+int main() {
+    int choice,m,n,x,start,i,j,pos,min,a[15],count;
+    count=0;
+    
+    printf("\nEnter the number of cylinders :");
+    scanf("%d",&m);
+    printf("\nEnter the number of requests :");
+    scanf("%d",&n);
+    printf("\nEnter current position :");
+    scanf("%d",&start);
+    
+    printf("\nEnter the request queue :");
+    for(i=0;i&lt;n;i++) {
+        scanf("%d",&a[i]);
+        if(a[i]&gt;=m) {
+            printf("\ninvalid input");
+            scanf("%d",&a[i]);
+        }
+    }
+    
+    // SCAN Algorithm implementation
+    printf("\nSCAN:\n");
+    printf("Scheduling services the request in the order that follows:\n");
+    count=0;
+    pos=0;
+    
+    // Sort the request queue
+    for(i=0;i&lt;n;i++)
+        for(j=0;j&lt;n-i-1;j++)
+            if(a[j]&gt;a[j+1]) {
+                x=a[j];
+                a[j]=a[j+1];
+                a[j+1]=x;
+            }
+    
+    // Find position of first request greater than start
+    for(i=0;i&lt;n;i++)
+        if(a[i]&lt;start)
+            pos++;
+    
+    // Sort the first half in descending order
+    for(i=0;i&lt;pos;i++)
+        for(j=0;j&lt;pos-i-1;j++)
+            if(a[j]&lt;a[j+1]) {
+                x=a[j];
+                a[j]=a[j+1];
+                a[j+1]=x;
+            }
+    
+    x=start;
+    printf("%d\n",x);
+    
+    // Service requests before start
+    for(i=0;i&lt;pos;i++) {
+        count+=absolute(a[i],x);
+        x=a[i];
+        printf("%d\n",x);
+    }
+    
+    // Go to cylinder 0
+    count+=absolute(x,0);
+    x=0;
+    printf("%d\n",x);
+    
+    // Service remaining requests
+    for(i=pos;i&lt;n;i++) {
+        count+=absolute(a[i],x);
+        x=a[i];
+        printf("%d\n",x);
+    }
+    
+    printf("\nTotal Head Movement: %d Cylinders",count);
+    return 0;
+}</pre>
+
+    <div class="output">
+        <h3>Output:</h3>
+        <pre>Enter the number of cylinders :200
+Enter the number of requests :5
+Enter current position :1
+Enter the request queue :2 3 5 8 9
+
+SCAN:
+Scheduling services the request in the order that follows:
+1
+0
+2
+3
+5
+8
+9
+Total Head Movement: 10 Cylinders</pre>
+    </div>
+</body>
+
+</html>

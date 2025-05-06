@@ -1,0 +1,102 @@
+<!-- Set 1: Task 1 and 2 -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>OS Set 1: UNIX Commands & File Copy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        h2 {
+            color: #3498db;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        .output {
+            background: #e8f4f8;
+            padding: 10px;
+            border-left: 3px solid #3498db;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>OS Set 1: UNIX Commands & File Copy</h1>
+
+    <h2>Task 1: Practice UNIX Commands</h2>
+    <p><strong>Commands to practice:</strong> cp, rm, mv, chmod, ps, kill</p>
+
+    <h3>Scp Command Examples:</h3>
+    <pre>Scp f1 f2          # Basic copy
+Scp -f f1 f2       # Force copy
+Scp -i f1 f2       # Ask confirmation
+Scp -b f1 f2       # Create backup</pre>
+
+    <h3>rm Command Examples:</h3>
+    <pre>$rm f1             # Basic remove
+$rm -f myfile.txt  # Force remove
+$rm -r mydirectory # Remove directory recursively
+$rm -i bak.c       # Interactive removal</pre>
+
+    <h3>mv Command Example:</h3>
+    <pre>$mv f1 f2          # Rename/move file</pre>
+
+    <h3>chmod Examples:</h3>
+    <pre>chmod +rwx filename   # Add permissions
+chmod -rwx directory  # Remove permissions
+chmod +x filename     # Allow executable
+chmod -wx filename    # Remove write/execute</pre>
+
+    <h3>ps Command Examples:</h3>
+    <pre>$ps               # Show current processes
+$ps -f            # Detailed listing
+$ps -u sumit      # User processes
+$ps -a            # All user processes</pre>
+
+    <h3>kill Command:</h3>
+    <pre>kill 644           # Terminate process with PID 644</pre>
+
+    <h2>Task 2: File Copy Program</h2>
+    <pre>#include&lt;stdio.h&gt;
+#include&lt;unistd.h&gt;
+#include&lt;sys/types.h&gt;
+#include&lt;sys/stat.h&gt;
+#include&lt;fcntl.h&gt;
+
+void main() {
+    int fd1,fd2,n=1;
+    char *buf;
+    fd1=open("f1",O_RDONLY);
+    fd2=open("f2",O_WRONLY|O_CREAT,S_IWUSR|S_IRUSR);
+    
+    if((fd1==-1) || (fd2==-1))
+        printf("error");
+    else {
+        while(n>0) {
+            n=read(fd1,&buf,1);
+            write(fd2,&buf,1);
+        }
+    }
+}</pre>
+
+    <div class="output">
+        <h3>Output:</h3>
+        <p>Process returned 1 (0x1) execution time : 0.593 s</p>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,95 @@
+<!-- Set 2: Task 2 and Task 9 -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>OS Set 2: File Copy & Paging</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        h2 {
+            color: #3498db;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        .output {
+            background: #e8f4f8;
+            padding: 10px;
+            border-left: 3px solid #3498db;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>OS Set 2: File Copy & Paging Technique</h1>
+
+    <h2>Task 2: File Copy Program (Repeated from Set 1)</h2>
+    <pre>#include&lt;stdio.h&gt;
+#include&lt;unistd.h&gt;
+#include&lt;sys/types.h&gt;
+#include&lt;sys/stat.h&gt;
+#include&lt;fcntl.h&gt;
+
+void main() {
+    int fd1,fd2,n=1;
+    char *buf;
+    fd1=open("f1",O_RDONLY);
+    fd2=open("f2",O_WRONLY|O_CREAT,S_IWUSR|S_IRUSR);
+    
+    if((fd1==-1) || (fd2==-1))
+        printf("error");
+    else {
+        while(n>0) {
+            n=read(fd1,&buf,1);
+            write(fd2,&buf,1);
+        }
+    }
+}</pre>
+
+    <h2>Task 9: Paging Technique</h2>
+    <pre>#include&lt;stdio.h&gt;
+void main() {
+    int np,ps,pt[20],nf,la,pn,index,pa,i;
+    printf("\n enter number of pages:");
+    scanf("%d",&np);
+    printf("\n enter page size");
+    scanf("%d",&ps);
+    printf("\n enter page table");
+    for(i=0;i&lt;np;i++)
+        scanf("%d",&pt[i]);
+    printf("\n enter number of frames:");
+    scanf("%d",&nf);
+    printf("\n enter logical address:");
+    scanf("%d",&la);
+    pn=la/ps;
+    index=la%ps;
+    pa=(pt[pn]*ps)+index;
+    printf("\n physical address is %d",pa);
+}</pre>
+
+    <div class="output">
+        <h3>Output:</h3>
+        <pre>enter number of pages:4
+enter page size 300
+enter page table 4 2 1
+enter number of frames:4
+enter logical address 1000
+physical address is 401</pre>
+    </div>
+</body>
+
+</html>

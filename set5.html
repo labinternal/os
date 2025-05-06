@@ -1,0 +1,129 @@
+<!-- Set 5: Producer-Consumer Problem -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>OS Set 5: Producer-Consumer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        h2 {
+            color: #3498db;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        .output {
+            background: #e8f4f8;
+            padding: 10px;
+            border-left: 3px solid #3498db;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>OS Set 5: Producer-Consumer Problem</h1>
+
+    <pre>#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+
+int mutex=1,full=0,empty=3,x=0;
+
+void main() {
+    int n;
+    void producer();
+    void consumer();
+    int wait(int);
+    int signal(int);
+    
+    printf("\n 1.Producer 2.Consumer 3.Exit.");
+    while(1) {
+        printf("\n Enter your choice:");
+        scanf("%d",&n);
+        switch(n) {
+            case 1: if((mutex==1)&&(empty!=0))
+                    producer();
+                else
+                    printf("Buffer is full");
+                break;
+            case 2: if((mutex==1)&&(full!=0))
+                    consumer();
+                else
+                    printf("Buffer is empty");
+                break;
+            case 3: exit(0);
+                break;
+        }
+    }
+}
+
+int wait(int s) {
+    while(s&lt;=0);
+    return(--s);
+}
+
+int signal(int s) {
+    return (++s);
+}
+
+void producer() {
+    empty=wait(empty);
+    mutex=wait(mutex);
+    x++;
+    printf("Producer produces item %d",x);
+    mutex=signal(mutex);
+    full=signal(full);
+}
+
+void consumer() {
+    full=wait(full);
+    mutex=wait(mutex);
+    printf("Consumer consumes item %d",x);
+    x--;
+    mutex=signal(mutex);
+    empty=signal(empty);
+}</pre>
+
+    <div class="output">
+        <h3>Output:</h3>
+        <pre>1.Producer 2.Consumer 3.Exit.
+Enter your choice:1
+Producer produces item 1
+Enter your choice:2
+Consumer consumes item 1
+Enter your choice:1
+Producer produces item 1
+Enter your choice:2
+Consumer consumes item 1
+Enter your choice:1
+Producer produces item 1
+Enter your choice:2
+Consumer consumes item 1
+Enter your choice:1
+Producer produces item 1
+Enter your choice:1
+Producer produces item 2
+Enter your choice:1
+Producer produces item 3
+Enter your choice:1
+Buffer is full
+Enter your choice:2
+Consumer consumes item 3
+Enter your choice:3</pre>
+    </div>
+</body>
+
+</html>

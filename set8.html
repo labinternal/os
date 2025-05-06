@@ -1,0 +1,116 @@
+<!-- Set 8: Banker's Algorithm -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>OS Set 8: Banker's Algorithm</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        h2 {
+            color: #3498db;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        .output {
+            background: #e8f4f8;
+            padding: 10px;
+            border-left: 3px solid #3498db;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>OS Set 8: Banker's Algorithm</h1>
+
+    <pre>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main() {
+    int Max[10][10], need[10][10], alloc[10][10], avail[10], completed[10], safeSequence[10];
+    int p, r, i, j, process, count;
+    count = 0;
+
+    printf("Enter the no of processes : ");
+    scanf("%d", &p);
+
+    for(i = 0; i&lt;p; i++)
+        completed[i] = 0;
+
+    printf("\n\nEnter the no of resources : ");
+    scanf("%d", &r);
+
+    printf("\n\nEnter the Max Matrix for each process :");
+    for(i = 0; i&lt;p; i++) {
+        printf("\nFor process %d : ", i + 1);
+        for(j = 0; j &lt; r; j++)
+            scanf("%d", &Max[i][j]);
+    }
+
+    printf("\n\nEnter the allocation for each process : ");
+    for(i = 0; i &lt; p; i++) {
+        printf("\nFor process %d : ",i + 1);
+        for(j = 0; j &lt; r; j++)
+            scanf("%d", &alloc[i][j]);
+    }
+
+    printf("\n\nEnter the Available Resources : ");
+    for(i = 0; i &lt; r; i++)
+        scanf("%d", &avail[i]);
+
+    for(i = 0; i &lt; p; i++)
+        for(j = 0; j &lt; r; j++)
+            need[i][j] = Max[i][j] - alloc[i][j];
+
+    do {
+        printf("\n Max matrix:\tAllocation matrix:\n");
+        for(i = 0; i &lt; p; i++) {
+            for(j = 0; j &lt; r; j++)
+                printf("%d ",Max[i][j]);
+            printf("\t\n");
+            for(j = 0; j &lt; r; j++)
+                printf("%d ",alloc[i][j]);
+            printf("\n");
+        }
+
+        process = -1;
+        for(i = 0; i &lt; p; i++) {
+            if(completed[i] == 0) {
+                process = i;
+                for(j = 0; j &lt; r; j++) {
+                    if(avail[j] &lt; need[i][j]) {
+                        process = -1;
+                        break;
+                    }
+                }
+            }
+            if(process != -1)
+                break;
+        }
+
+        if(process != -1) {
+            printf("\nProcess %d runs to completion!", process);
+            safeSequence[count] = process;
+            count++;
+            for(j = 0; j &lt; r; j++) {
+                avail[j] += alloc[process][j];
+                alloc[process][j] = 0;
+                Max[process][j] = 0;
+                completed[process] = 1;
+            }
+        }
+    } while(count != p && process !=
